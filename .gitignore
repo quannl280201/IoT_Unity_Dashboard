@@ -4,3 +4,11 @@ ProjectSettings
 Logs
 Packages
 Library
+.vscode
+NuGet
+Assembly-CSharp.csproj
+IoT_Dashboard.sln
+omnisharp.json
+.editorconfig
+Assembly-CSharp-firstpass.csproj
+obj
