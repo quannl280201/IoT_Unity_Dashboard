@@ -9,8 +9,14 @@ namespace Dashboard
 {
     public class DashboardManager : MonoBehaviour
     {
-        // [SerializeField]
-        // private Text station_name;
+
+        [SerializeField]
+        private GameObject mainDashboard;
+        public static GameObject MainDashboard {get; private set;}    
+
+
+        [SerializeField]
+        private Text station_name;
         
         // [SerializeField]
         // private CanvasGroup _canvasLayer1;
@@ -18,10 +24,10 @@ namespace Dashboard
         // private Toggle LampControl;
         // [SerializeField]
         // private Text LampStatus;
-        // [SerializeField]
-        // private Text temperature;
-        // [SerializeField]
-        // private Text humidity;
+        [SerializeField]
+        private Text temperature;
+        [SerializeField]
+        private Text humidity;
         // [SerializeField]
         // private Text min_temperature;
         // [SerializeField]
@@ -32,9 +38,9 @@ namespace Dashboard
         // private CanvasGroup status_fan_lamp_off;
         // [SerializeField]
         // private Button _btn_config;
-        // /// <summary>
-        // /// Layer 2 elements
-        // /// </summary>
+        /// <summary>
+        /// Layer 2 elements
+        /// </summary>
         // [SerializeField]
         // private CanvasGroup _canvasLayer2;
         // [SerializeField]
@@ -54,56 +60,56 @@ namespace Dashboard
 
         // //private bool device_status = false;
 
-        // public void Update_Status(Status_Data _status_data)
-        // {
-        //     station_name.text = _status_data.station_name;
-        //     foreach(data_ss _data in _status_data.data_ss)
-        //     {
-        //         switch (_data.ss_name)
-        //         {
+        public void Update_Status(Status_Data _status_data)
+        {
+            station_name.text = _status_data.station_name;
+            foreach(data_ss _data in _status_data.data_ss)
+            {
+                switch (_data.ss_name)
+                {
 
-        //             case "temperature_min":
-        //                 min_temperature.text = _data.ss_value + "°C";
-        //                 _input_min_tempe.text = _data.ss_value;
-        //                 break;
+                    // case "temperature_min":
+                    //     min_temperature.text = _data.ss_value + "°C";
+                    //     _input_min_tempe.text = _data.ss_value;
+                    //     break;
 
-        //             case "temperature_max":
-        //                 max_temperature.text = _data.ss_value + "°C";
-        //                 _input_max_tempe.text = _data.ss_value;
+                    // case "temperature_max":
+                    //     max_temperature.text = _data.ss_value + "°C";
+                    //     _input_max_tempe.text = _data.ss_value;
 
-        //                 break;
+                    //     break;
 
-        //             case "fan_temperature":
-        //                 temperature.text = _data.ss_value + "°C";
-        //                 break;
+                    case "garden_temperature":
+                        temperature.text = _data.ss_value + "°C";
+                        break;
 
-        //             case "fan_humidity":
-        //                 humidity.text = _data.ss_value + "%";
-        //                 break;
+                    case "garden_humidity":
+                        humidity.text = _data.ss_value + "%";
+                        break;
 
-        //             case "mode_fan_auto":
-        //                 if (_data.ss_value == "1") { 
-        //                     ModeAuto.isOn = true;
-        //                     LampControl.interactable = false;
-        //                 }
-        //                 else { 
-        //                     ModeAuto.isOn = false;
-        //                     LampControl.interactable = true;
-        //                 }
-        //                 break;
-        //             //case "device_status":
-        //             //    Debug.Log("_data.ss_value " + _data.ss_value);
-        //             //    if (_data.ss_value == "1")
-        //             //        _btn_config.interactable = true;
+                    // case "mode_fan_auto":
+                    //     if (_data.ss_value == "1") { 
+                    //         ModeAuto.isOn = true;
+                    //         LampControl.interactable = false;
+                    //     }
+                    //     else { 
+                    //         ModeAuto.isOn = false;
+                    //         LampControl.interactable = true;
+                    //     }
+                    //     break;
+                    //case "device_status":
+                    //    Debug.Log("_data.ss_value " + _data.ss_value);
+                    //    if (_data.ss_value == "1")
+                    //        _btn_config.interactable = true;
                        
-        //             //    break;
-        //         }
+                    //    break;
+                }
                 
-        //     }
-        //     if(_status_data.device_status=="1")
-        //         _btn_config.interactable = true;
+            }
+            // if(_status_data.device_status=="1")
+            //     _btn_config.interactable = true;
 
-        // }
+        }
 
         // public void Update_Control(ControlFan_Data _control_data)
         // {
@@ -232,6 +238,9 @@ namespace Dashboard
             Debug.Log("Log Out!");
             DashboardMqtt.MqttInstance.Disconnect();
             SceneManager.LoadScene("LoginScene", LoadSceneMode.Single);
+        }
+        void Awake(){
+            DashboardManager.MainDashboard = mainDashboard;
         }
     }
 }

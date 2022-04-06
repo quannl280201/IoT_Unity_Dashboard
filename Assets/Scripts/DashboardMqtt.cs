@@ -13,40 +13,40 @@ using UnityEngine.SceneManagement;
 
 namespace Dashboard
 {
-    // public class Status_Data
-    // {
-    //     public string project_id { get; set; }
-    //     public string project_name { get; set; }
-    //     public string station_id { get; set; }
-    //     public string station_name { get; set; }
-    //     public string longitude { get; set; }
-    //     public string latitude { get; set; }
-    //     public string volt_battery { get; set; }
-    //     public string volt_solar { get; set; }
-    //     public List<data_ss> data_ss { get; set; }
-    //     public string device_status { get; set; }
-    // }
+    public class Status_Data
+    {
+        public string project_id { get; set; }
+        public string project_name { get; set; }
+        public string station_id { get; set; }
+        public string station_name { get; set; }
+        public string longitude { get; set; }
+        public string latitude { get; set; }
+        public string volt_battery { get; set; }
+        public string volt_solar { get; set; }
+        public List<data_ss> data_ss { get; set; }
+        public string device_status { get; set; }
+    }
 
-    // public class data_ss
-    // {
-    //     public string ss_name { get; set; }
-    //     public string ss_unit { get; set; }
-    //     public string ss_value { get; set; }
-    // }
+    public class data_ss
+    {
+        public string ss_name { get; set; }
+        public string ss_unit { get; set; }
+        public string ss_value { get; set; }
+    }
 
-    // public class Config_Data
-    // {
-    //     public float temperature_max { get; set; }
-    //     public float temperature_min { get; set; }
-    //     public int mode_fan_auto { get; set; }
-    // }
+    public class Config_Data
+    {
+        public float temperature_max { get; set; }
+        public float temperature_min { get; set; }
+        public int mode_fan_auto { get; set; }
+    }
 
-    // public class ControlFan_Data
-    // {
-    //     public int fan_status { get; set; }
-    //     public int device_status { get; set; }
+    public class ControlFan_Data
+    {
+        public int fan_status { get; set; }
+        public int device_status { get; set; }
 
-    // }
+    }
 
     public class DashboardMqtt : M2MqttUnityClient
     {
@@ -54,17 +54,19 @@ namespace Dashboard
         public List<string> topics = new List<string>();
 
 
-        // public string msg_received_from_topic_status = "";
-        // public string msg_received_from_topic_control = "";
+        public string msg_received_from_topic_status = "";
+        public string msg_received_from_topic_control = "";
 
 
-        // private List<string> eventMessages = new List<string>();
-        // [SerializeField]
-        // public Status_Data _status_data;
-        // [SerializeField]
-        // public Config_Data _config_data;
-        // [SerializeField]
-        // public ControlFan_Data _controlFan_data;
+        private List<string> eventMessages = new List<string>();
+        [SerializeField]
+        public Status_Data _status_data;
+        [SerializeField]
+        public Config_Data _config_data;
+        [SerializeField]
+        public ControlFan_Data _controlFan_data;
+        [SerializeField]
+        public DashboardManager dbMng;
 
 
 
@@ -152,22 +154,25 @@ namespace Dashboard
         protected override void DecodeMessage(string topic, byte[] message)
         {
             string msg = System.Text.Encoding.UTF8.GetString(message);
-            Debug.Log("Received: " + msg);
+            Debug.Log("Received: " + msg + " from " + topic);
             //StoreMessage(msg);
-            // if (topic == topics[0])
-            //     ProcessMessageStatus(msg);
+            if (topic == topics[0])
+                ProcessMessageStatus(msg);
 
             // if (topic == topics[2])
             //     ProcessMessageControl(msg);
         }
 
-        // private void ProcessMessageStatus(string msg)
-        // {
-        //     _status_data = JsonConvert.DeserializeObject<Status_Data>(msg);
-        //     msg_received_from_topic_status = msg;
-        //     GetComponent<DashboardManager>().Update_Status(_status_data);
+        private void ProcessMessageStatus(string msg)
+        {
+            _status_data = JsonConvert.DeserializeObject<Status_Data>(msg);
+            msg_received_from_topic_status = msg;
+            if(DashboardManager.MainDashboard.GetComponent<DashboardManager>() != null){
+                DashboardManager.MainDashboard.GetComponent<DashboardManager>().Update_Status(_status_data);
+                Debug.Log("Successfully process!");
+            }
 
-        // }
+        }
 
         // private void ProcessMessageControl(string msg)
         // {
