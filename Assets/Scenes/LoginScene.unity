@@ -1499,8 +1499,11 @@ MonoBehaviour:
   autoConnect: 0
   mqttUserName: 
   mqttPassword: 
-  topics:
+  topics_to_subscribe:
   - /bkiot/1911931/status
+  topics_to_publish:
+  - /bkiot/1911931/led
+  - /bkiot/1911931/pump
   msg_received_from_topic_status: 
   msg_received_from_topic_control: 
 --- !u!1 &1882976624

@@ -41,17 +41,18 @@ namespace Dashboard
         public int mode_fan_auto { get; set; }
     }
 
-    public class ControlFan_Data
+    public class ControlDevice_Data
     {
-        public int fan_status { get; set; }
-        public int device_status { get; set; }
+        public string device { get; set; }
+        public string status { get; set; }
 
     }
 
     public class DashboardMqtt : M2MqttUnityClient
     {
         public static DashboardMqtt MqttInstance;
-        public List<string> topics = new List<string>();
+        public List<string> topics_to_subscribe = new List<string>();
+        public List<string> topics_to_publish = new List<string>();
 
 
         public string msg_received_from_topic_status = "";
@@ -59,14 +60,10 @@ namespace Dashboard
 
 
         private List<string> eventMessages = new List<string>();
-        [SerializeField]
         public Status_Data _status_data;
-        [SerializeField]
         public Config_Data _config_data;
-        [SerializeField]
-        public ControlFan_Data _controlFan_data;
-        [SerializeField]
-        public DashboardManager dbMng;
+        public ControlDevice_Data _controlPump_data = new ControlDevice_Data();
+        public ControlDevice_Data _controlLED_data = new ControlDevice_Data();
 
 
 
@@ -75,19 +72,25 @@ namespace Dashboard
         //     _config_data = new Config_Data();
         //     GetComponent<DashboardManager>().Update_Config_Value(_config_data);
         //     string msg_config = JsonConvert.SerializeObject(_config_data);
-        //     client.Publish(topics[1], System.Text.Encoding.UTF8.GetBytes(msg_config), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+        //     client.Publish(topics_to_subscribe[1], System.Text.Encoding.UTF8.GetBytes(msg_config), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
         //     Debug.Log("publish config");
         // }
 
-        // public void PublishFan()
-        // {
-        //     _controlFan_data = GetComponent<DashboardManager>().Update_ControlFan_Value(_controlFan_data);
-        //     string msg_config = JsonConvert.SerializeObject(_controlFan_data);
-        //     client.Publish(topics[2], System.Text.Encoding.UTF8.GetBytes(msg_config), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
-        //     Debug.Log("publish fan");
+        public void PublishPumpControl()
+        {
+            MqttInstance._controlPump_data = DashboardManager.MainDashboard.GetComponent<DashboardManager>().Update_ControlPump_Value(MqttInstance._controlPump_data);
+            string msg_config = JsonConvert.SerializeObject(MqttInstance._controlPump_data);
+            client.Publish(topics_to_publish[1], System.Text.Encoding.UTF8.GetBytes(msg_config), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+            Debug.Log(msg_config);
+        }
 
-
-        // }
+         public void PublishLEDControl()
+        {
+            MqttInstance._controlLED_data = DashboardManager.MainDashboard.GetComponent<DashboardManager>().Update_ControlLED_Value(MqttInstance._controlLED_data);
+            string msg_config = JsonConvert.SerializeObject(MqttInstance._controlLED_data);
+            client.Publish(topics_to_publish[0], System.Text.Encoding.UTF8.GetBytes(msg_config), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+            Debug.Log(msg_config);
+        }
 
         public void SetEncrypted(bool isEncrypted)
         {
@@ -111,7 +114,7 @@ namespace Dashboard
         protected override void SubscribeTopics()
         {
 
-            foreach (string topic in topics)
+            foreach (string topic in topics_to_subscribe)
             {
                 if (topic != "")
                 {
@@ -123,7 +126,7 @@ namespace Dashboard
 
         protected override void UnsubscribeTopics()
         {
-            foreach (string topic in topics)
+            foreach (string topic in topics_to_subscribe)
             {
                 if (topic != "")
                 {
@@ -156,10 +159,10 @@ namespace Dashboard
             string msg = System.Text.Encoding.UTF8.GetString(message);
             Debug.Log("Received: " + msg + " from " + topic);
             //StoreMessage(msg);
-            if (topic == topics[0])
+            if (topic == topics_to_subscribe[0])
                 ProcessMessageStatus(msg);
 
-            // if (topic == topics[2])
+            // if (topic == topics_to_subscribe[2])
             //     ProcessMessageControl(msg);
         }
 

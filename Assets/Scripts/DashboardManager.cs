@@ -28,6 +28,10 @@ namespace Dashboard
         private Text temperature;
         [SerializeField]
         private Text humidity;
+        [SerializeField]
+        public ToggleSwitch led_switch;
+        [SerializeField]
+        public ToggleSwitch pump_switch;
         // [SerializeField]
         // private Text min_temperature;
         // [SerializeField]
@@ -124,13 +128,19 @@ namespace Dashboard
 
         // }
 
-        // public ControlFan_Data Update_ControlFan_Value(ControlFan_Data _controlFan)
-        // {
-        //     _controlFan.device_status = 0;
-        //     _controlFan.fan_status = (LampControl.isOn ? 1 : 0);
-        //     LampControl.interactable = false;
-        //     return _controlFan;
-        // }
+        public ControlDevice_Data Update_ControlPump_Value(ControlDevice_Data _controlPump)
+        {
+            _controlPump.device = MainDashboard.GetComponent<DashboardManager>().pump_switch.GetComponent<ToggleSwitch>().deviceName.GetComponent<Text>().text;
+            _controlPump.status = MainDashboard.GetComponent<DashboardManager>().pump_switch.GetComponent<ToggleSwitch>().SwitchState == 1 ? "ON" : "OFF";
+            return _controlPump;
+        }
+
+        public ControlDevice_Data Update_ControlLED_Value(ControlDevice_Data _controlLED)
+        {
+            _controlLED.device = MainDashboard.GetComponent<DashboardManager>().led_switch.GetComponent<ToggleSwitch>().deviceName.GetComponent<Text>().text;
+            _controlLED.status = MainDashboard.GetComponent<DashboardManager>().led_switch.GetComponent<ToggleSwitch>().SwitchState == 1 ? "ON" : "OFF";
+            return _controlLED;
+        }
 
         // public Config_Data Update_Config_Value(Config_Data _configdata)
         // {
