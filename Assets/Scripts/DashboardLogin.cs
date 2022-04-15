@@ -11,7 +11,7 @@ namespace Dashboard
 {
     public class DashboardLogin : MonoBehaviour
     {
-        public DashboardLogin LoginInstance;
+        public static DashboardLogin LoginInstance;
         public InputField brokerURLInputField;
         public InputField usernameInputField;
         public InputField passwordInputField;

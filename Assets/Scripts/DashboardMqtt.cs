@@ -66,16 +66,6 @@ namespace Dashboard
         public ControlDevice_Data _controlLED_data = new ControlDevice_Data();
 
 
-
-        // public void PublishConfig()
-        // {
-        //     _config_data = new Config_Data();
-        //     GetComponent<DashboardManager>().Update_Config_Value(_config_data);
-        //     string msg_config = JsonConvert.SerializeObject(_config_data);
-        //     client.Publish(topics_to_subscribe[1], System.Text.Encoding.UTF8.GetBytes(msg_config), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
-        //     Debug.Log("publish config");
-        // }
-
         public void PublishPumpControl()
         {
             MqttInstance._controlPump_data = DashboardManager.MainDashboard.GetComponent<DashboardManager>().Update_ControlPump_Value(MqttInstance._controlPump_data);
@@ -101,7 +91,6 @@ namespace Dashboard
         protected override void OnConnecting()
         {
             base.OnConnecting();
-            //SetUiMessage("Connecting to broker on " + brokerAddress + ":" + brokerPort.ToString() + "...\n");
         }
 
         protected override void OnConnected()
@@ -139,6 +128,7 @@ namespace Dashboard
         protected override void OnConnectionFailed(string errorMessage)
         {
             Debug.Log("CONNECTION FAILED! " + errorMessage);
+            DashboardLogin.LoginInstance.errorMessageObject.GetComponent<Text>().text = "Failed to connect to MQTT server!";
         }
 
         protected override void OnDisconnected()
@@ -161,9 +151,6 @@ namespace Dashboard
             //StoreMessage(msg);
             if (topic == topics_to_subscribe[0])
                 ProcessMessageStatus(msg);
-
-            // if (topic == topics_to_subscribe[2])
-            //     ProcessMessageControl(msg);
         }
 
         private void ProcessMessageStatus(string msg)
@@ -172,18 +159,9 @@ namespace Dashboard
             msg_received_from_topic_status = msg;
             if(DashboardManager.MainDashboard.GetComponent<DashboardManager>() != null){
                 DashboardManager.MainDashboard.GetComponent<DashboardManager>().Update_Status(_status_data);
-                Debug.Log("Successfully process!");
             }
 
         }
-
-        // private void ProcessMessageControl(string msg)
-        // {
-        //     _controlFan_data = JsonConvert.DeserializeObject<ControlFan_Data>(msg);
-        //     msg_received_from_topic_control = msg;
-        //     GetComponent<DashboardManager>().Update_Control(_controlFan_data);
-
-        // }
 
         private void OnDestroy()
         {
